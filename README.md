@@ -3,6 +3,8 @@
 
 Gdocs-twine uses as simple syntax for the story's structure: most of the complexity is handled by Twine's story format. Note that it ignores all styles applied in Google Docs. You'll have to style using the Twine story format. A file consists of two parts: the front matter, and a list of passages. The front matter is a series of lines in the form `key: value`. You'll want to set the story's `name` and `format`. After the front matter come the story's passages. Each passage starts with a line in the form `== passage-name`. If you need to start a line in the story with `==`, you can set `passage_separator` to something else in the front matter. That's it!
 
+To use gdocs-twine with your story, get the URL from `Publish to the Web...` under the File menu. Then go to [https://danielsmc.github.io/gdocs-twine/](https://danielsmc.github.io/gdocs-twine/), paste the URL into the box, and go.
+
 Here's [an example](https://docs.google.com/document/d/1qehNM140m47Mykxpcj9JO9tE_ghJDUacv4B6fhs_jmY/pub) of the source format, and [what it looks like rendered](https://danielsmc.github.io/gdocs-twine/?doc=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F1qehNM140m47Mykxpcj9JO9tE_ghJDUacv4B6fhs_jmY%2Fpub).
 
 Right now, two story formats are supported: `Harlow` and `Sugarcube2`. Eventually you might be able to use any format by passing a URL, but since story formats are arbitary javascript, it's a sandboxing nightmare.
