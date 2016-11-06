@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<script>
+window.addEventListener("DOMContentLoaded", function() {
+  'use strict';
+
+  function fetchDoc(url) {
+    var req = new XMLHttpRequest();
+    req.responseType = "document";
+    req.open("GET" , "https://crossorigin.me/"+url, true);
+    req.onload = function(d,e) {
+      var ptags = req.response.querySelectorAll("#contents p");
+      var doctext = Array.prototype.map.call(ptags,function(t) {return t.textContent;}).join("\n");
+      console.log(doctext);
+      var storyData = doc2storydata(doctext);
+      console.log(storyData);
+      document.title = storyData.getAttribute('name');
+      injectFormat(storyData.getAttribute('format'));
+      window.storyFormat = function(format) {
+        var target = document.createElement("iframe");
+        target.srcdoc=format.source
+          .replace("{{STORY_NAME}}","ffff")
+          .replace("{{STORY_DATA}}",storyData.outerHTML);
+        document.body.appendChild(target);
+      };
+    }
+    req.send();
+  }
+
+  function getParams() {
+    var out = {};
+    location.search.substr(1).split("&").forEach(function(d) {
+      var splat = d.split("=");
+      out[decodeURIComponent(splat[0])] = decodeURIComponent(splat[1]);
+    });
+    return out;
+  }
+
+  var params = getParams();
+  if (params.doc) {
+    document.body.innerHTML = "";
+    fetchDoc(params.doc);
+  };
+
+  function injectFormat(key) {
+    var tag = document.createElement("script");
+    if (key==="Harlowe") {
+      tag.src = "harlowe.js";
+    } else if (key==="Sugarcube2") {
+      tag.src = "sugarcube.js";
+    }
+    document.querySelector("head").appendChild(tag);
+  }
+
+  function doc2storydata(text) {
+    var lines = text.split("\n")
+    var story = document.createElement("tw-storydata");
+    story.setAttribute('startNode',"1");
+    story.setAttribute('name',"arglebargle");
+    var currentPassage = false, sep = "==", pid = 1;
+    lines.forEach(function(l){
+      if (l.startsWith(sep)) {
+          appendPassage(currentPassage);
+          currentPassage = {name: l.split(sep)[1].trim(), lines: []};
+      } else if (currentPassage) {
+        currentPassage.lines.push(l);
+      } else {
+        if (l.indexOf(":")>=0) {
+          var splat = l.split(":");
+          if (splat[0] == "passage_separator") {
+            sep = splat[1].trim()
+          } else {
+            story.setAttribute(splat[0],splat[1].trim());
+          }
+        }
+      }
+    });
+    appendPassage(currentPassage);
+
+    function appendPassage(pobj) {
+      if (!pobj) return;
+      var passage = document.createElement("tw-passagedata");
+      passage.setAttribute('pid',pid++);
+      passage.setAttribute('name',pobj.name);
+      passage.innerText = pobj.lines.join("\n");
+      story.appendChild(passage);
+    }
+
+    return story;
+  }
+
+
+
+  function injectStoryData(data) {
+      var target = document.createElement("iframe");
+      target.srcdoc=format.source
+        .replace("{{STORY_NAME}}","ffff")
+        .replace("{{STORY_DATA}}",data.outerHTML);
+      document.body.appendChild(target);
+  }
+});
+</script>
+<style>
+iframe {
+  border: 0;
+  position:absolute;
+  left: 0;
+  width: 100%;
+  top: 0;
+  height: 100%;
+}
+</style>
+</head>
+<body>
+<form action="#" method="get">
+<label>Google Docs Published URL: <input name="doc"/></label>
+<input type="submit"/>
+</form>
+</body>
+</html>
