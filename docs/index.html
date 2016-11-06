@@ -61,7 +61,7 @@ window.addEventListener("DOMContentLoaded", function() {
     fetchDoc(params.doc);
   };
 
-  function injectFormat(key,cb) {
+  function injectFormat(format,cb) {
     var jail = document.createElement("iframe");
     jail.sandbox = "allow-scripts";
     window.addEventListener("message",function(e) {
@@ -69,12 +69,13 @@ window.addEventListener("DOMContentLoaded", function() {
         cb(String(e.data));
       }
     });
-    if (key==="Harlowe") {
-      jail.src = "formatjail.html?https://twinery.org/2/story-formats/Harlowe/format.js";
-    } else {
-      jail.src = "formatjail.html?"+key;
-    }
-    document.querySelector("head").appendChild(jail);
+    var srcdoc = '<script>window.storyFormat = function(format) {window.parent.postMessage(format.source,"*");};<\/script>';
+    var jailed = document.createElement("script");
+    jailed.src = (format==="Harlowe") ? "https://twinery.org/2/story-formats/Harlowe/format.js" : format;
+    srcdoc += jailed.outerHTML;
+    jail.srcdoc=srcdoc;
+    jail.className = "hidden";
+    document.body.appendChild(jail);
   }
 
   function doc2storydata(text) {
@@ -141,6 +142,10 @@ iframe, textarea {
   width: 100%;
   top: 0;
   height: 100%;
+}
+
+.hidden {
+  display: none;
 }
 </style>
 </head>
