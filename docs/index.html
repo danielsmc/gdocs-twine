@@ -58,7 +58,6 @@ window.addEventListener("DOMContentLoaded", function() {
     var lines = text.split("\n")
     var story = document.createElement("tw-storydata");
     story.setAttribute('startNode',"1");
-    story.setAttribute('name',"arglebargle");
     var currentPassage = false, sep = "==", pid = 1;
     lines.forEach(function(l){
       if (l.startsWith(sep)) {
