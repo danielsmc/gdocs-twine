@@ -3,12 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <script>
-window.storyFormat = function(format) {
-	window.parent.postMessage(format.source,"*");
-};
-var tag = document.createElement("script");
-tag.src = location.search.substr(1);
-document.querySelector("head").appendChild(tag);
+if (!document.domain) {
+  window.storyFormat = function(format) {
+    window.parent.postMessage(format.source,"*");
+  };
+  var tag = document.createElement("script");
+  tag.src = location.search.substr(1);
+  document.querySelector("head").appendChild(tag);
+}
 </script>
 </head>
 </html>
