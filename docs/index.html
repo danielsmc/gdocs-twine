@@ -11,7 +11,7 @@ window.addEventListener("DOMContentLoaded", function() {
     req.responseType = "document";
     req.open("GET" , "https://crossorigin.me/"+url, true);
     req.onload = function(d,e) {
-      var ptags = req.response.querySelectorAll("#contents p");
+      var ptags = req.response.querySelectorAll("#contents > :not(style)");
       var doctext = Array.prototype.map.call(ptags,function(t) {return t.textContent;}).join("\n");
       console.log(doctext);
       var storyData = doc2storydata(doctext);
