@@ -30,7 +30,7 @@ window.addEventListener("DOMContentLoaded", function() {
       } else {
         document.title = storyData.getAttribute('name');
         injectFormat(storyData.getAttribute('format'), function(source) {
-          console.log(source);
+          // console.log(source);
           var target = document.createElement("iframe");
           target.sandbox = "allow-scripts";
           target.srcdoc=source
