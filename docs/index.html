@@ -89,13 +89,14 @@ window.addEventListener("DOMContentLoaded", function() {
       } else if (currentPassage) {
         currentPassage.lines.push(l);
       } else {
-        if (l.indexOf(":")>=0) {
-          var splat = l.split(":");
-          splat[0] = splat[0].toLowerCase();
-          if (splat[0] == "passage_separator") {
-            sep = splat[1].trim()
+        var splitPoint = l.indexOf(":");
+        if (splitPoint>=0) {
+          var key = l.substr(0,splitPoint).toLowerCase();
+          var val = l.substr(splitPoint+1).trim();
+          if (key == "passage_separator") {
+            sep = val
           } else {
-            story.setAttribute(splat[0],splat[1].trim());
+            story.setAttribute(key,val);
           }
         }
       }
