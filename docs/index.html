@@ -34,7 +34,7 @@ window.addEventListener("DOMContentLoaded", function() {
           var target = document.createElement("iframe");
           // target.sandbox = "allow-scripts";
           target.srcdoc=format.source
-            .replace("{{STORY_NAME}}","ffff")
+            .replace("{{STORY_NAME}}",storyData.getAttribute('name'))
             .replace("{{STORY_DATA}}",storyData.outerHTML);
           document.body.innerHTML = "";
           document.body.appendChild(target);
