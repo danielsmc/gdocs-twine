@@ -22,16 +22,23 @@ window.addEventListener("DOMContentLoaded", function() {
       console.log(doctext);
       var storyData = doc2storydata(doctext);
       console.log(storyData);
-      document.title = storyData.getAttribute('name');
-      injectFormat(storyData.getAttribute('format'));
-      window.storyFormat = function(format) {
-        var target = document.createElement("iframe");
-        // target.sandbox = "allow-scripts";
-        target.srcdoc=format.source
-          .replace("{{STORY_NAME}}","ffff")
-          .replace("{{STORY_DATA}}",storyData.outerHTML);
+      if (params.export) {
+        var ta = document.createElement("textarea");
+        ta.value = storyData.outerHTML;
         document.body.innerHTML = "";
-        document.body.appendChild(target);
+        document.body.appendChild(ta);
+      } else {
+        document.title = storyData.getAttribute('name');
+        injectFormat(storyData.getAttribute('format'));
+        window.storyFormat = function(format) {
+          var target = document.createElement("iframe");
+          // target.sandbox = "allow-scripts";
+          target.srcdoc=format.source
+            .replace("{{STORY_NAME}}","ffff")
+            .replace("{{STORY_DATA}}",storyData.outerHTML);
+          document.body.innerHTML = "";
+          document.body.appendChild(target);
+        }
       };
     }
     req.send();
@@ -66,7 +73,7 @@ window.addEventListener("DOMContentLoaded", function() {
     var lines = text.split("\n")
     var story = document.createElement("tw-storydata");
     story.setAttribute('startNode',"1");
-    var currentPassage = false, sep = "==", pid = 1;
+    var currentPassage = false, sep = "==", pid = 0;
     lines.forEach(function(l){
       if (l.startsWith(sep)) {
           appendPassage(currentPassage);
@@ -102,7 +109,11 @@ window.addEventListener("DOMContentLoaded", function() {
         passage.setAttribute('type','text/twine-javascript');
       } else {
         passage = document.createElement("tw-passagedata");
-        passage.setAttribute('pid',pid++);
+        passage.setAttribute('pid',++pid);
+        var spacing = 150;
+        var cols = 8;
+        passage.setAttribute('position',""+(pid%cols)*spacing+","+Math.floor(pid/cols)*spacing);
+        passage.setAttribute('tags',"");
         passage.setAttribute('name',pobj.name);
       }
       passage.innerHTML = pobj.lines.join("\n");
@@ -111,20 +122,10 @@ window.addEventListener("DOMContentLoaded", function() {
 
     return story;
   }
-
-
-
-  function injectStoryData(data) {
-      var target = document.createElement("iframe");
-      target.srcdoc=format.source
-        .replace("{{STORY_NAME}}","ffff")
-        .replace("{{STORY_DATA}}",data.outerHTML);
-      document.body.appendChild(target);
-  }
 });
 </script>
 <style>
-iframe {
+iframe, textarea {
   border: 0;
   position:absolute;
   left: 0;
@@ -136,8 +137,9 @@ iframe {
 </head>
 <body>
 <form action="#" method="get">
-<label>Google Docs Published URL: <input name="doc"/></label>
-<input type="submit"/>
+<label>Source URL: <input name="doc" size="80" /></label>
+<input value="Render" type="submit"/>
+<input name="export" value="Export XML" type="submit"/>
 </form>
 </body>
 </html>
