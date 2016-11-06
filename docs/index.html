@@ -88,10 +88,23 @@ window.addEventListener("DOMContentLoaded", function() {
 
     function appendPassage(pobj) {
       if (!pobj) return;
-      var passage = document.createElement("tw-passagedata");
-      passage.setAttribute('pid',pid++);
-      passage.setAttribute('name',pobj.name);
-      passage.innerText = pobj.lines.join("\n");
+      var passage;
+      if (pobj.name === "twine-user-stylesheet") {
+        passage =  document.createElement("style");
+        passage.setAttribute('role','stylesheet');
+        passage.setAttribute('id','twine-user-stylesheet');
+        passage.setAttribute('type','text/twine-css');
+      } else if (pobj.name === "twine-user-script") {
+        passage =  document.createElement("script");
+        passage.setAttribute('role','script');
+        passage.setAttribute('id','twine-user-script');
+        passage.setAttribute('type','text/twine-javascript');
+      } else {
+        passage = document.createElement("tw-passagedata");
+        passage.setAttribute('pid',pid++);
+        passage.setAttribute('name',pobj.name);
+      }
+      passage.innerHTML = pobj.lines.join("\n");
       story.appendChild(passage);
     }
 

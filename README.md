@@ -1,7 +1,7 @@
 # gdocs-twine
-[Twine](https://twinery.org) is a tool for telling hypertext stories. It's got a cool interface that lets you do things like visualize your story's structure, but it doesn't allow for collaborative editing. Gdocs-twine fills that gap by allowing you to build a Twine story as a Google Doc. 
+[Twine](https://twinery.org) is a tool for telling hypertext stories. It's got a cool interface that lets you do things like visualize your story's structure, but it doesn't allow for collaborative editing. Gdocs-twine fills that gap by allowing you to build a Twine story as a Google Doc, or as a text file anywhere on the web. 
 
-Gdocs-twine uses as simple syntax for the story's structure: most of the complexity is handled by Twine's story format. Note that it ignores all styles applied in Google Docs. You'll have to style using the Twine story format. A file consists of two parts: the front matter, and a list of passages. The front matter is a series of lines in the form `key: value`. You'll want to set the story's `name` and `format`. After the front matter come the story's passages. Each passage starts with a line in the form `== passage-name`. If you need to start a line in the story with `==`, you can set `passage_separator` to something else in the front matter. That's it!
+Gdocs-twine uses as simple syntax for the story's structure: most of the complexity is handled by Twine's story format. Note that it ignores all styles applied in Google Docs. You'll have to style using the Twine story format. You may find it helpful to turn off Google Docs' automatic formatting under `Tools>Preferences`. A file consists of two parts: the front matter, and a list of passages. The front matter is a series of lines in the form `key: value`. You'll want to set the story's `name` and `format`. After the front matter come the story's passages. Each passage starts with a line in the form `== passage-name`. If you need to start a line in the story with `==`, you can set `passage_separator` to something else in the front matter. Scripts and styles can be included as passages with the magic names `twine-user-stylesheet` and `twine-user-script`.
 
 To use gdocs-twine with your story, get the URL from `Publish to the Web...` under the File menu. Then go to [https://danielsmc.github.io/gdocs-twine/](https://danielsmc.github.io/gdocs-twine/), paste the URL into the box, and go.
 
@@ -11,5 +11,4 @@ Right now, two story formats are supported: `Harlow` and `Sugarcube2`. Eventuall
 
 ## TODO
 * Import/Export Tools
-* Better documentation
-* Support for story scripts and styles
+* Arbitrary Story Format Sandboxing
