@@ -6,11 +6,19 @@
 window.addEventListener("DOMContentLoaded", function() {
   'use strict';
 
+  var known_formats = {
+    Harlowe: "https://twinery.org/2/story-formats/Harlowe/format.js"
+  };
+
+  function CORSify(url) {
+    return "https://cors-anywhere.herokuapp.com/"+url;
+  }
+
   function fetchDoc(url) {
     var req = new XMLHttpRequest();
     var is_gdoc = url.startsWith("https://docs.google.com/");
     req.responseType = is_gdoc ? "document" : "text";
-    req.open("GET" , "https://cors-anywhere.herokuapp.com/"+url, true);
+    req.open("GET" , CORSify(url), true);
     req.onload = function(d,e) {
       var doctext;
       if (is_gdoc) {
@@ -71,7 +79,7 @@ window.addEventListener("DOMContentLoaded", function() {
     });
     var srcdoc = '<script>window.storyFormat = function(format) {window.parent.postMessage(format.source,"*");};<\/script>';
     var jailed = document.createElement("script");
-    jailed.src = (format==="Harlowe") ? "https://twinery.org/2/story-formats/Harlowe/format.js" : format;
+    jailed.src = known_formats[format] || format;
     srcdoc += jailed.outerHTML;
     jail.srcdoc=srcdoc;
     jail.className = "hidden";
