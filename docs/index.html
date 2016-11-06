@@ -9,7 +9,7 @@ window.addEventListener("DOMContentLoaded", function() {
   function fetchDoc(url) {
     var req = new XMLHttpRequest();
     req.responseType = "document";
-    req.open("GET" , "https://crossorigin.me/"+url, true);
+    req.open("GET" , "http://cors-anywhere.herokuapp.com/"+url, true);
     req.onload = function(d,e) {
       var ptags = req.response.querySelectorAll("#contents > :not(style)");
       var doctext = Array.prototype.map.call(ptags,function(t) {return t.textContent;}).join("\n");
