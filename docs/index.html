@@ -23,6 +23,7 @@ window.addEventListener("DOMContentLoaded", function() {
         target.srcdoc=format.source
           .replace("{{STORY_NAME}}","ffff")
           .replace("{{STORY_DATA}}",storyData.outerHTML);
+        document.body.innerHTML = "";
         document.body.appendChild(target);
       };
     }
@@ -40,7 +41,7 @@ window.addEventListener("DOMContentLoaded", function() {
 
   var params = getParams();
   if (params.doc) {
-    document.body.innerHTML = "";
+    document.body.innerHTML = "Loading...";
     fetchDoc(params.doc);
   };
 
