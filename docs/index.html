@@ -29,16 +29,18 @@ window.addEventListener("DOMContentLoaded", function() {
         document.body.appendChild(ta);
       } else {
         document.title = storyData.getAttribute('name');
-        injectFormat(storyData.getAttribute('format'));
-        window.storyFormat = function(format) {
+        injectFormat(storyData.getAttribute('format'), function(source) {
+          console.log(source);
           var target = document.createElement("iframe");
-          // target.sandbox = "allow-scripts";
-          target.srcdoc=format.source
+          target.sandbox = "allow-scripts";
+          target.srcdoc=source
+            .replace("localStorage","false")
+            .replace("sessionStorage","false")
             .replace("{{STORY_NAME}}",storyData.getAttribute('name'))
             .replace("{{STORY_DATA}}",storyData.outerHTML);
           document.body.innerHTML = "";
           document.body.appendChild(target);
-        }
+        });
       };
     }
     req.send();
@@ -59,14 +61,20 @@ window.addEventListener("DOMContentLoaded", function() {
     fetchDoc(params.doc);
   };
 
-  function injectFormat(key) {
-    var tag = document.createElement("script");
+  function injectFormat(key,cb) {
+    var jail = document.createElement("iframe");
+    jail.sandbox = "allow-scripts";
+    window.addEventListener("message",function(e) {
+      if (e.source===jail.contentWindow) {
+        cb(String(e.data));
+      }
+    });
     if (key==="Harlowe") {
-      tag.src = "harlowe.js";
-    } else if (key==="Sugarcube2") {
-      tag.src = "sugarcube.js";
+      jail.src = "formatjail.html?https://twinery.org/2/story-formats/Harlowe/format.js";
+    } else {
+      jail.src = "formatjail.html?"+key;
     }
-    document.querySelector("head").appendChild(tag);
+    document.querySelector("head").appendChild(jail);
   }
 
   function doc2storydata(text) {
