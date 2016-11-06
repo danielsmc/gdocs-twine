@@ -26,6 +26,7 @@ window.addEventListener("DOMContentLoaded", function() {
       injectFormat(storyData.getAttribute('format'));
       window.storyFormat = function(format) {
         var target = document.createElement("iframe");
+        target.sandbox = "allow-scripts";
         target.srcdoc=format.source
           .replace("{{STORY_NAME}}","ffff")
           .replace("{{STORY_DATA}}",storyData.outerHTML);
