@@ -8,11 +8,17 @@ window.addEventListener("DOMContentLoaded", function() {
 
   function fetchDoc(url) {
     var req = new XMLHttpRequest();
-    req.responseType = "document";
+    var is_gdoc = url.startsWith("https://docs.google.com/");
+    req.responseType = is_gdoc ? "document" : "text";
     req.open("GET" , "http://cors-anywhere.herokuapp.com/"+url, true);
     req.onload = function(d,e) {
-      var ptags = req.response.querySelectorAll("#contents > :not(style)");
-      var doctext = Array.prototype.map.call(ptags,function(t) {return t.textContent;}).join("\n");
+      var doctext;
+      if (is_gdoc) {
+        var ptags = req.response.querySelectorAll("#contents > :not(style)");
+        doctext = Array.prototype.map.call(ptags,function(t) {return t.textContent;}).join("\n");
+      } else {
+        doctext = req.response;
+      }
       console.log(doctext);
       var storyData = doc2storydata(doctext);
       console.log(storyData);
