@@ -10,7 +10,7 @@ window.addEventListener("DOMContentLoaded", function() {
     var req = new XMLHttpRequest();
     var is_gdoc = url.startsWith("https://docs.google.com/");
     req.responseType = is_gdoc ? "document" : "text";
-    req.open("GET" , "http://cors-anywhere.herokuapp.com/"+url, true);
+    req.open("GET" , "https://cors-anywhere.herokuapp.com/"+url, true);
     req.onload = function(d,e) {
       var doctext;
       if (is_gdoc) {
