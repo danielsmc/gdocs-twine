@@ -14,6 +14,17 @@ window.addEventListener("DOMContentLoaded", function() {
     return "https://cors-anywhere.herokuapp.com/"+url;
   }
 
+  function sandboxMunge(src) {
+    return src.replace('<body','<body data-fakecookie=""')
+              .replace(/(local|session)Storage/g,"false")
+              .replace(/document.cookie/g,"document.body.dataset.fakecookie");
+  }
+
+  function formatStory(format,data) {
+    return format.replace(/\{\{STORY_DATA\}\}/g,data.outerHTML)
+                 .replace(/\{\{STORY_NAME\}\}/g,data.getAttribute('name'));
+  }
+
   function fetchDoc(url) {
     var req = new XMLHttpRequest();
     var is_gdoc = url.startsWith("https://docs.google.com/");
@@ -31,9 +42,15 @@ window.addEventListener("DOMContentLoaded", function() {
       var storyData = doc2storydata(doctext);
       console.log(storyData);
       if (params.export) {
-        var ta = document.createElement("textarea");
-        ta.value = storyData.outerHTML;
         document.body.innerHTML = "";
+        var ta = document.createElement("textarea");
+        if (params.export==="XML") {
+          ta.value = storyData.outerHTML;
+        } else if (params.export==="HTML") {
+          injectFormat(storyData.getAttribute('format'), function(source) {
+            ta.value = formatStory(source,storyData);
+          });
+        }
         document.body.appendChild(ta);
       } else {
         document.title = storyData.getAttribute('name');
@@ -41,11 +58,7 @@ window.addEventListener("DOMContentLoaded", function() {
           // console.log(source);
           var target = document.createElement("iframe");
           target.sandbox = "allow-scripts";
-          target.srcdoc=source
-            .replace(/(local|session)Storage/g,"false")
-            .replace(/document.cookie/g,"document.body.className")
-            .replace(/\{\{STORY_NAME\}\}/g,storyData.getAttribute('name'))
-            .replace(/\{\{STORY_DATA\}\}/g,storyData.outerHTML);
+          target.srcdoc=formatStory(sandboxMunge(source),storyData);
           document.body.innerHTML = "";
           document.body.appendChild(target);
         });
@@ -191,7 +204,8 @@ iframe, textarea {
 <form action="#" method="get">
 <label>Source URL: <input name="doc" size="80" /></label>
 <input value="Render" type="submit"/>
-<input name="export" value="Export XML" type="submit"/>
+<button name="export" value="XML" type="submit">Export XML</button>
+<button name="export" value="HTML" type="submit">Export HTML</button>
 </form>
 More info <a href="https://github.com/danielsmc/gdocs-twine">on GitHub</a>.
 </body>
