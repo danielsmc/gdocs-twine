@@ -72,11 +72,13 @@ window.addEventListener("DOMContentLoaded", function() {
   function injectFormat(format,cb) {
     var jail = document.createElement("iframe");
     jail.sandbox = "allow-scripts";
-    window.addEventListener("message",function(e) {
+    function handleMessage(e) {
       if (e.source===jail.contentWindow) {
+        window.removeEventListener("message", handleMessage);
         cb(String(e.data));
       }
-    });
+    }
+    window.addEventListener("message",handleMessage);
     var srcdoc = '<script>window.storyFormat = function(format) {window.parent.postMessage(format.source,"*");};<\/script>';
     var jailed = document.createElement("script");
     jailed.src = known_formats[format] || format;
