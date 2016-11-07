@@ -42,10 +42,10 @@ window.addEventListener("DOMContentLoaded", function() {
           var target = document.createElement("iframe");
           target.sandbox = "allow-scripts";
           target.srcdoc=source
-            .replace("localStorage","false")
-            .replace("sessionStorage","false")
-            .replace("{{STORY_NAME}}",storyData.getAttribute('name'))
-            .replace("{{STORY_DATA}}",storyData.outerHTML);
+            .replace(/(local|session)Storage/g,"false")
+            .replace(/document.cookie/g,"document.body.className")
+            .replace(/\{\{STORY_NAME\}\}/g,storyData.getAttribute('name'))
+            .replace(/\{\{STORY_DATA\}\}/g,storyData.outerHTML);
           document.body.innerHTML = "";
           document.body.appendChild(target);
         });
